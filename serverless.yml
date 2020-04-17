@@ -12,6 +12,7 @@ provider:
   stage: ${opt:stage, 'development'}
   region: "eu-west-1"
   runtime: "nodejs12.x"
+  memorySize: 256
   profile: "persistenceservice_development"
   environment:
     NODE_ENV: "production"
@@ -27,6 +28,7 @@ functions:
       - http:
           path: /pairs/{key}
           method: PUT
+          cors: true
   getPair:
     handler: src/get_pair.handler
     role: ApiRole
@@ -34,6 +36,7 @@ functions:
       - http:
           path: /pairs/{key}
           method: GET
+          cors: true
   getAllPairs:
     handler: src/get_all_pairs.handler
     role: ApiRole
@@ -41,6 +44,7 @@ functions:
       - http:
           path: /pairs
           method: GET
+          cors: true
 
 resources:
   Resources:
