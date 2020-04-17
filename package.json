@@ -4,6 +4,10 @@
   "version": "1.0.0",
   "author": "Gerardo Munguia",
   "license": "MIT",
+  "scripts": {
+    "post-deploy": "AWS_PROFILE=persistenceservice_development AWS_REGION=eu-west-1 node bin/set_throttle.js",
+    "deploy": "yarn sls deploy && yarn post-deploy"
+  },
   "dependencies": {
     "aws-sdk": "^2.657.0",
     "ramda": "^0.27.0"
