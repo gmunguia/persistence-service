@@ -1,7 +1,7 @@
 {
   "name": "persistence-service",
+  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
   "author": "Gerardo Munguia",
   "license": "MIT",
   "dependencies": {
@@ -21,6 +21,6 @@
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
-    "*.{js,md}": "prettier --write"
+    "*.{js,md,yml}": "prettier --write"
   }
 }

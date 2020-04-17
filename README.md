@@ -8,8 +8,6 @@ Educational purposes.
 
 ## API
 
-Root URL of the service: `TBD`.
-
 An application identifier is used to avoid collisions with other people using the service.
 
 ### Create a pair

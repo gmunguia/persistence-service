@@ -1,0 +1,93 @@
+service:
+  name: persistence
+
+custom:
+  environment: ${self:custom.environments.${self:provider.stage}}
+  environments:
+    development:
+      PAIRS_TABLE_NAME: pairs
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'development'}
+  region: "eu-west-1"
+  runtime: "nodejs12.x"
+  profile: "persistenceservice_development"
+  environment:
+    NODE_ENV: "production"
+    STAGE: ${self:provider.stage}
+    DEFAULT_AWS_REGION: ${self:provider.region}
+    PAIRS_TABLE_NAME: ${self:custom.environment.PAIRS_TABLE_NAME}
+
+functions:
+  putPair:
+    handler: src/put_pair.handler
+    role: ApiRole
+    events:
+      - http:
+          path: /pairs/{key}
+          method: PUT
+  getPair:
+    handler: src/get_pair.handler
+    role: ApiRole
+    events:
+      - http:
+          path: /pairs/{key}
+          method: GET
+  getAllPairs:
+    handler: src/get_all_pairs.handler
+    role: ApiRole
+    events:
+      - http:
+          path: /pairs
+          method: GET
+
+resources:
+  Resources:
+    PairsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:custom.environment.PAIRS_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: "applicationId"
+            AttributeType: "S"
+          - AttributeName: "key"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "applicationId"
+            KeyType: "HASH"
+          - AttributeName: "key"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: "10"
+          WriteCapacityUnits: "10"
+    ApiRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: "ApiRole"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - "lambda.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaRole"
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        Policies:
+          - PolicyName: "ApiRoleAccessPolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "dynamodb:PutItem"
+                    - "dynamodb:GetItem"
+                    - "dynamodb:Query"
+                  Resource:
+                    Fn::GetAtt:
+                      - PairsTable
+                      - Arn
