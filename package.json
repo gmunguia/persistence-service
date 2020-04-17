@@ -3,5 +3,24 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Gerardo Munguia",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.657.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "husky": ">=4",
+    "lint-staged": ">=10",
+    "prettier": "^2.0.4",
+    "serverless": "^1.67.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,md}": "prettier --write"
+  }
 }
