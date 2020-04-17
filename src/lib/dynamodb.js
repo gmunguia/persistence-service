@@ -25,6 +25,7 @@ const createDynamoDb = () => {
 
   return {
     put: (...args) => dynamoDb.put(...args).promise(),
+    update: (...args) => dynamoDb.update(...args).promise(),
     get: (...args) => dynamoDb.get(...args).promise(),
     query: withAllPages(dynamoDb.query.bind(dynamoDb)),
   };

@@ -1,6 +1,7 @@
 const { inspect } = require("util");
 const { compose, fromPairs, toPairs, map } = require("ramda");
 const { createDynamoDb: _createDynamoDb } = require("./lib/dynamodb.js");
+const { chaos } = require("./lib/chaos.js");
 
 const createHandler = (
   createDynamoDb = _createDynamoDb,
@@ -38,6 +39,8 @@ const createHandler = (
 
   const handleEvent = async (event) => {
     try {
+      chaos();
+
       const { applicationId } = parseEvent(event);
       const pair = await readPairs({ applicationId });
 
