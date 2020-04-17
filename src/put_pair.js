@@ -71,6 +71,9 @@ const createHandler = (
           key,
           value,
         }),
+        headers: {
+          "content-type": "application/json",
+        },
       };
     } catch (error) {
       console.error(inspect(event, { depth: 3 }));

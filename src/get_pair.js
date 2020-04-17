@@ -67,6 +67,9 @@ const createHandler = (
       return {
         statusCode: 200,
         body: JSON.stringify(pair),
+        headers: {
+          "content-type": "application/json",
+        },
       };
     } catch (error) {
       console.error(inspect(event, { depth: 3 }));
