@@ -1,0 +1,7 @@
+{
+  "name": "persistence-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Gerardo Munguia",
+  "license": "MIT"
+}
