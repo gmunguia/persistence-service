@@ -24,10 +24,9 @@ const createDynamoDb = () => {
   };
 
   return {
-    scan: withAllPages(dynamoDb.scan.bind(dynamoDb)),
     put: (...args) => dynamoDb.put(...args).promise(),
     get: (...args) => dynamoDb.get(...args).promise(),
-    query: (...args) => dynamoDb.query(...args).promise(),
+    query: withAllPages(dynamoDb.query.bind(dynamoDb)),
   };
 };
 

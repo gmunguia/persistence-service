@@ -12,46 +12,38 @@ const createHandler = (
     value,
   ]);
 
-  const parseEvent = ({ pathParameters, headers, body, requestContext }) => {
+  const parseEvent = ({ headers }) => {
     const normalisedHeaders = normaliseHeaders(headers);
 
     // TODO validation
     return {
       applicationId: normalisedHeaders["x-application-id"],
-      key: pathParameters.key,
-      value: body,
-      requestTime: new Date(requestContext.requestTimeEpoch),
     };
   };
 
-  const writeItem = async ({ applicationId, key, value, requestTime }) => {
+  const readPairs = async ({ applicationId }) => {
     const db = createDynamoDb();
 
-    const item = {
-      applicationId,
-      key,
-      value,
-      createdAt: requestTime.toISOString(),
-    };
-
-    await db.put({
+    const items = await db.query({
       TableName: pairsTableName,
-      Item: item,
+      KeyConditionExpression: "applicationId = :applicationId",
+      ExpressionAttributeValues: {
+        ":applicationId": applicationId,
+      },
     });
+
+    // TODO: parse pair from database to decouple representation from storage.
+    return items;
   };
 
   const handleEvent = async (event) => {
     try {
-      const { applicationId, key, value, requestTime } = parseEvent(event);
-      await writeItem({ applicationId, key, value, requestTime });
+      const { applicationId } = parseEvent(event);
+      const pair = await readPairs({ applicationId });
 
       return {
         statusCode: 200,
-        body: JSON.stringify({
-          applicationId,
-          key,
-          value,
-        }),
+        body: JSON.stringify(pair),
       };
     } catch (error) {
       console.error(inspect(event, { depth: 3 }));
