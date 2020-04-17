@@ -6,6 +6,10 @@ custom:
   environments:
     development:
       PAIRS_TABLE_NAME: pairs
+      ERROR_RATE: 0.1
+    production:
+      PAIRS_TABLE_NAME: pairs
+      ERROR_RATE: 0
 
 provider:
   name: aws
@@ -19,6 +23,7 @@ provider:
     STAGE: ${self:provider.stage}
     DEFAULT_AWS_REGION: ${self:provider.region}
     PAIRS_TABLE_NAME: ${self:custom.environment.PAIRS_TABLE_NAME}
+    ERROR_RATE: ${self:custom.environment.ERROR_RATE}
 
 functions:
   putPair:
