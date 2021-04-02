@@ -42,6 +42,14 @@ functions:
           path: /pairs/{key}
           method: GET
           cors: true
+  getPairsByPrefix:
+    handler: src/get_pairs_by_prefix.handler
+    role: ApiRole
+    events:
+      - http:
+          path: /collections/{prefix}
+          method: GET
+          cors: true
   getAllPairs:
     handler: src/get_all_pairs.handler
     role: ApiRole
